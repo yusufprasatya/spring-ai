@@ -13,22 +13,25 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Debug Repository Structure (Optional)
+        run: ls -R
+
       - name: Set Up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
           cache: 'maven'
-          cache-dependency-path: 'sub-project/pom.xml' # Optional: Change if incorrect
+          cache-dependency-path: 'pom.xml'  # FIXED: Use correct path
 
       - name: Build with Maven
-        run: mvn clean package -DskipTests  # Skip tests for faster builds (remove `-DskipTests` if needed)
+        run: mvn clean package -DskipTests
 
       - name: Run Tests
-        run: mvn test  # Run unit tests separately
+        run: mvn test
 
       - name: Archive Build Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: app-artifact
-          path: target/*.jar  # Adjust path if your JAR is elsewhere
+          path: target/*.jar  # Adjust if JAR is elsewhere
