@@ -1,0 +1,34 @@
+name: Build and Test
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+          cache-dependency-path: 'sub-project/pom.xml' # Optional: Change if incorrect
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests  # Skip tests for faster builds (remove `-DskipTests` if needed)
+
+      - name: Run Tests
+        run: mvn test  # Run unit tests separately
+
+      - name: Archive Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-artifact
+          path: target/*.jar  # Adjust path if your JAR is elsewhere
